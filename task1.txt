@@ -24,6 +24,7 @@ class HomeScreen extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Top container with rounded bottom corners
           Container(
             width: double.infinity,
             height: 300,
@@ -40,6 +41,7 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Row containing profile info and notification icon
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -82,6 +84,7 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 20),
+                  // Search bar
                   TextField(
                     decoration: InputDecoration(
                       filled: true,
@@ -96,6 +99,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 20),
+                  // Horizontal scrollable category buttons
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
@@ -116,6 +120,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           ),
+          // Grid layout for item cards
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -128,7 +133,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 itemCount: 4,
                 itemBuilder: (context, index) {
-                  return ItemCard();
+                  return ItemCard(index: index);
                 },
               ),
             ),
@@ -139,6 +144,7 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
+// Rounded add button for adding categories
 class RoundedAddButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -154,6 +160,7 @@ class RoundedAddButton extends StatelessWidget {
   }
 }
 
+// Category button widget
 class CategoryButton extends StatelessWidget {
   final String label;
   CategoryButton({required this.label});
@@ -176,7 +183,11 @@ class CategoryButton extends StatelessWidget {
   }
 }
 
+// Item card widget displaying image, title, and icons
 class ItemCard extends StatelessWidget {
+  final int index;
+  ItemCard({required this.index});
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -217,16 +228,32 @@ class ItemCard extends StatelessWidget {
             ],
           ),
         ),
+        // Top right corner icon
         Positioned(
           top: 10,
           right: 10,
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.purple,
+              color: Colors.black,
               shape: BoxShape.circle,
             ),
             padding: EdgeInsets.all(6),
-            child: Icon(Icons.autorenew, color: Colors.white, size: 20),
+            child: Icon(index == 2 ? Icons.hourglass_empty : Icons.autorenew,
+                color: Colors.white, size: 20),
+          ),
+        ),
+        // Bottom right quantity indicator
+        Positioned(
+          bottom: 10,
+          right: 10,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            child:
+                Text("x4", style: TextStyle(color: Colors.white, fontSize: 12)),
           ),
         ),
       ],
