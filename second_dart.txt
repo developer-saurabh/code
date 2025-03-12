@@ -1,0 +1,199 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: CampTentScreen(),
+    );
+  }
+}
+
+class CampTentScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          // Background Image with Bottom Rounded Corners
+          ClipRRect(
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(30),
+              bottomRight: Radius.circular(30),
+            ),
+            child: Image.asset(
+              'assets/tent.jpg', // Ensure correct image path
+              height: 320,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+          ),
+
+          // Back Button
+          Positioned(
+            top: 50,
+            left: 16,
+            child: CircleAvatar(
+              backgroundColor: Colors.white,
+              child: Icon(Icons.arrow_back, color: Colors.black),
+            ),
+          ),
+
+          // White Information Card with "Offers for You"
+          Positioned(
+            bottom: -330, // Adjusted for increased card height
+            left: 0,
+            right: 0,
+            child: Column(
+              children: [
+                // Camp Tent Info Card
+                Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 10,
+                        spreadRadius: 2,
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Title & Edit Icon
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Camp tent',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.edit, color: Colors.grey[700]),
+                            onPressed: () {
+                              print("Edit button clicked!");
+                            },
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'to Coffee Maker',
+                        style: TextStyle(color: Colors.grey[700]),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'This is a very good camp tent! It is waterproof. Welded corners and inverted seams keep water...',
+                        style: TextStyle(fontSize: 16, color: Colors.grey[800]),
+                      ),
+                    ],
+                  ),
+                ),
+
+                SizedBox(height: 20),
+
+                // "Offers for You" Section
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Offers for you:",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 10),
+
+                      // Coffee Maker Cards (Horizontal Scroll)
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            OfferCard(
+                              imagePath: 'assets/coffee1.jpg',
+                              title: 'Coffee maker',
+                              author: 'by John Williams',
+                            ),
+                            SizedBox(width: 10),
+                            OfferCard(
+                              imagePath: 'assets/coffee2.jpg',
+                              title: 'Coffee maker',
+                              author: 'by Emily Stephen',
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Offer Card Widget with Increased Height
+class OfferCard extends StatelessWidget {
+  final String imagePath;
+  final String title;
+  final String author;
+
+  OfferCard(
+      {required this.imagePath, required this.title, required this.author});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 160, // Slightly wider for better visuals
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(color: Colors.black12, blurRadius: 5, spreadRadius: 1),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Increased Image Height
+          ClipRRect(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+            child: Image.asset(imagePath,
+                height: 160, width: double.infinity, fit: BoxFit.cover),
+          ),
+          Padding(
+            padding: EdgeInsets.all(10), // More padding for better spacing
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title,
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                SizedBox(height: 6),
+                Text(author,
+                    style: TextStyle(fontSize: 14, color: Colors.grey[600])),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
