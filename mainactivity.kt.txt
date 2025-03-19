@@ -1,0 +1,23 @@
+package com.example.project  // Ensure this matches your package name
+
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
+import android.os.Bundle
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity: FlutterActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                "default_channel", // Ensure this matches AndroidManifest.xml
+                "Default Notification Channel",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            val manager = getSystemService(NotificationManager::class.java)
+            manager?.createNotificationChannel(channel)
+        }
+    }
+}

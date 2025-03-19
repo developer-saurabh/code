@@ -1,0 +1,102 @@
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+// Initialize Flutter Local Notifications
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+// Background Message Handler
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print("Handling a background message: ${message.messageId}");
+  showNotification(message.notification?.title, message.notification?.body);
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  // Setup background message handling
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
+  // Request permission for notifications
+  FirebaseMessaging.instance.requestPermission();
+
+  // Get FCM token
+  String? token = await FirebaseMessaging.instance.getToken();
+  print('FCM Token: $token');
+
+  // Initialize local notifications
+  await setupFlutterNotifications();
+
+  runApp(MyApp());
+}
+
+Future<void> setupFlutterNotifications() async {
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('@mipmap/ic_launcher');
+
+  final InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
+  );
+
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+}
+
+void showNotification(String? title, String? body) async {
+  const AndroidNotificationDetails androidPlatformChannelSpecifics =
+      AndroidNotificationDetails(
+        'default_channel', // Make sure this matches AndroidManifest.xml
+        'Default Channel',
+        importance: Importance.max,
+        priority: Priority.high,
+      );
+
+  const NotificationDetails platformChannelSpecifics = NotificationDetails(
+    android: androidPlatformChannelSpecifics,
+  );
+
+  await flutterLocalNotificationsPlugin.show(
+    0, // Notification ID
+    title ?? 'New Notification',
+    body ?? 'You have a new message!',
+    platformChannelSpecifics,
+  );
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(home: HomePage());
+  }
+}
+
+class HomePage extends StatefulWidget {
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print("Foreground Message: ${message.notification?.title}");
+      showNotification(message.notification?.title, message.notification?.body);
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print("Opened App from Notification: ${message.notification?.title}");
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('FCM Example')),
+      body: Center(child: Text('FCM Example')),
+    );
+  }
+}
